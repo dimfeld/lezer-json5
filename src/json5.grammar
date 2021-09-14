@@ -31,7 +31,7 @@ Array {
 @skip { LineComment | BlockComment | spaces | newline }
 
 @tokens {
-  spaces[@export] { $[\u0009 \u000b\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000\ufeff]+ }
+  spaces[@export] { $[\u0009 \u000b\u000c\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000\ufeff]+ }
 
   newline[@export] { $[\r\n\u2028\u2029] }
 
@@ -39,7 +39,7 @@ Array {
   True { "true" }
   False { "false" }
 
-  LineComment { "//" ![\n]* }
+  LineComment { "//" ![\r\n\u2028\u2029]* }
 
   BlockComment { "/*" blockCommentRest }
 
@@ -56,8 +56,8 @@ Array {
   @precedence { spaces, newline, Identifier }
 
   String {
-    "\"" ("\\" ("\"" | escapableChar) | !["\\])* "\"" |
-    "'" ("\\" ("'" | escapableChar) | !['\\])* "'"
+    "\"" ("\\" ("\"" | escapableChar | newline) | !["\\])* "\"" |
+    "'" ("\\" ("'" | escapableChar | newline) | !['\\])* "'"
   }
 
   escapableChar {
