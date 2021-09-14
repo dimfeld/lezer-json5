@@ -1,6 +1,6 @@
 {
   "name": "lezer-json5",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Lezer parser for JSON5",
   "main": "dist/index.cjs",
   "module": "dist/index.es.js",
