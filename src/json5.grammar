@@ -1,0 +1,75 @@
+// This grammar draws heavily on these two sources:
+// The Lezer Javascript grammar at https://github.com/lezer-parser/javascript
+// The Tree-Sitter JSON5 grammar at https://github.com/Joakker/tree-sitter-json5
+
+@top File { value }
+
+value {
+  Object |
+  Array |
+  Number |
+  String |
+  "null" |
+  "true" |
+  "false"
+}
+
+Object {
+  "{" (Member ("," Member)* ","?)? "}"
+}
+
+Member {
+  Name ":" value
+}
+
+Name { String | Identifier }
+
+Array {
+  "[" (value ("," value)* ","?)? "]"
+}
+
+@skip { LineComment | BlockComment | spaces | newline }
+
+@tokens {
+  spaces[@export] { $[\u0009 \u000b\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000\ufeff]+ }
+
+  newline[@export] { $[\r\n\u2028\u2029] }
+
+  LineComment { "//" ![\n]* }
+
+  BlockComment { "/*" blockCommentRest }
+
+  blockCommentRest { ![*] blockCommentRest | "*" blockCommentAfterStar }
+
+  blockCommentAfterStar { "/" | "*" blockCommentAfterStar | ![/*] blockCommentRest }
+
+  identifierChar { std.asciiLetter | $[_$\u{a1}-\u{10ffff}] }
+
+  Identifier {
+    identifierChar (identifierChar | std.digit)*
+  }
+
+  @precedence { spaces, newline, Identifier }
+
+  String {
+    "\"" ("\\" ("\"" | escapableChar) | !["\\])* "\"" |
+    "'" ("\\" ("'" | escapableChar) | !['\\])* "'"
+  }
+
+  escapableChar {
+    $[\\bfnrtv]
+  }
+
+  Number {
+    (
+      $[+-]?
+      (
+        "0" $[xX] $[0-9a-fA-F]+ |
+        ("0" | $[1-9] $[0-9]*) "." $[0-9]* ($[eE] $[+-]? $[0-9]+)? |
+        "." $[0-9]* ($[eE] $[+-]? $[0-9]+)? |
+        ("0" | $[1-9] $[0-9]*) ($[eE] $[+-]? $[0-9]+)? |
+        "Infinity"
+      )
+    ) | "NaN"
+  }
+}
