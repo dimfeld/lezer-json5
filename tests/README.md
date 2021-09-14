@@ -1,6 +1,6 @@
 # Parse Test Cases for JSON5
 
-These tests are copied from https://github.com/json5/json5-tests.
+Except for `index.js`, everything in this directory is copied from https://github.com/json5/json5-tests.
 
 The test cases' file extension signals the expected behavior:
 
