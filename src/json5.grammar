@@ -19,10 +19,12 @@ Object {
 }
 
 Member {
-  Name ":" value
+  PropertyName PropertyColon value
 }
 
-Name { String | Identifier }
+String { string }
+
+PropertyName { string | identifier }
 
 Array {
   "[" (value ("," value)* ","?)? "]"
@@ -39,6 +41,8 @@ Array {
   True { "true" }
   False { "false" }
 
+  PropertyColon { ":" }
+
   LineComment { "//" ![\r\n\u2028\u2029]* }
 
   BlockComment { "/*" blockCommentRest }
@@ -49,13 +53,13 @@ Array {
 
   identifierChar { std.asciiLetter | $[_$\u{a1}-\u{10ffff}] }
 
-  Identifier {
+  identifier {
     identifierChar (identifierChar | std.digit)*
   }
 
-  @precedence { spaces, newline, Identifier }
+  @precedence { spaces, newline, identifier }
 
-  String {
+  string {
     "\"" ("\\" ("\"" | escapableChar | newline) | !["\\])* "\"" |
     "'" ("\\" ("'" | escapableChar | newline) | !['\\])* "'"
   }
