@@ -3,22 +3,23 @@
 // The Tree-Sitter JSON5 grammar at https://github.com/Joakker/tree-sitter-json5
 
 @top File { value }
+@detectDelim
 
 value {
   Object |
   Array |
   Number |
   String |
-  null |
+  Null |
   True |
   False
 }
 
 Object {
-  "{" (Member ("," Member)* ","?)? "}"
+  "{" (Property ("," Property)* ","?)? "}"
 }
 
-Member {
+Property {
   PropertyName PropertyColon value
 }
 
@@ -37,7 +38,7 @@ Array {
 
   newline[@export] { $[\r\n\u2028\u2029] }
 
-  null[@export] { "null" }
+  Null { "null" }
   True { "true" }
   False { "false" }
 
